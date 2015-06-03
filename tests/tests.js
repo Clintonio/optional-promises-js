@@ -2,12 +2,13 @@
 
 var fs = require('fs');
 var q = require('q');
-var OptionalPromise = require('../optional-promise');
-
-var promise = q();
+var optionalPromise = require('../optional-promise');
 
 // temporary testing code
-(new OptionalPromise(promise))
+var promise = optionalPromise('hi');
+
+promise
+  .optional()
   .exists(function() {
     console.log('exists called');
     return 'Hello';
@@ -16,7 +17,6 @@ var promise = q();
     console.log('nothing called');
     return 'test';
   })
-  .promise()
   .then(function(val) {
     console.log('Value: ' + val);
   });
