@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs');
 var q = require('q');
 var OptionalPromise = require('../optional-promise');
 
@@ -18,4 +19,32 @@ var promise = q();
   .promise()
   .then(function(val) {
     console.log('Value: ' + val);
+  });
+
+function doSomething(hasResult) {
+  return q()
+    .then(function() {
+      if(hasResult) {
+        return "test";
+      }
+    });
+}
+
+var promiseActive = doSomething(true);
+promiseActive
+  .optional()
+  .exists(function(data) {
+    console.log(data);
+  })
+  .nothing(function(val) {
+    console.log("Nothing exists");
+  });
+
+doSomething(false)
+  .optional()
+  .exists(function(data) {
+    console.log(data);
+  })
+  .nothing(function(val) {
+    console.log("Nothing exists");
   });

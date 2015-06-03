@@ -18,7 +18,7 @@ function OptionalPromise(promise) {
 
   var onDone = promise.then(function(val) {
     if((new Optional(val)).exists()) {
-      return q().then(onExists);
+      return q(val).then(onExists);
     } else {
       return q().then(onNothing);
     }
@@ -36,6 +36,12 @@ function OptionalPromise(promise) {
 
   this.promise = function() {
     return onDone;
+  };
+}
+
+if(!q.makePromise.prototype.optional) {
+  q.makePromise.prototype.optional = function() {
+      return new OptionalPromise(this);
   };
 }
 
