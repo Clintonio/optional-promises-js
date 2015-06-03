@@ -12,11 +12,15 @@
   },
   "keywords": [
     "promise",
-    "optional"
+    "optional",
+    "q"
   ],
   "author": "Clinton Alexander",
   "license": "LGPLv3",
   "dependencies": {
     "q": "^1.4.1"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0"
   }
 }

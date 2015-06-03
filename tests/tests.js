@@ -3,75 +3,101 @@
 var fs = require('fs');
 var q = require('q');
 var optionalPromise = require('../optional-promise');
+var chai = require('chai');
 
-// temporary testing code
-var promise = optionalPromise('hi');
+var expect = chai.expect;
 
-promise
-  .optional()
-  .exists(function() {
-    console.log('exists called');
-    return 'Hello';
-  })
-  .nothing(function() {
-    console.log('nothing called');
-    return 'test';
-  })
-  .then(function(val) {
-    console.log('Value: ' + val);
-  });
-
-function doSomething(hasResult) {
-  return q()
-    .then(function() {
-      if(hasResult) {
-        return "test";
-      }
+describe('Optional promises', function() {
+  describe('#optional', function() {
+    it('should be available', function() {
+      var promise = q();
+      expect(promise.optional).to.exist;
     });
-}
 
-var promiseActive = doSomething(true);
-promiseActive
-  .optional()
-  .exists(function(data) {
-    console.log(data);
-  })
-  .nothing(function(val) {
-    console.log("Nothing exists");
-  })
-  .then(function() {
-    console.log("After");
+    it('should return a new promise when .optional is called', function() {
+      var promise = q();
+      var optionalPromise = promise.optional();
+
+      expect(optionalPromise).to.include.keys(['exists', 'nothing']);
+      expect(optionalPromise).to.not.equal(promise);
+    });
+
+    it('should resolve normally without exists/nothing', function(done) {
+      var promise = q('test').optional();
+
+      promise.then(function(val) {
+        expect(val).to.be.equal('test');
+        done();
+      });
+    });
   });
 
-doSomething(false)
-  .optional()
-  .exists(function(data) {
-    console.log(data);
-  })
-  .nothing(function(val) {
-    console.log("Nothing exists");
-  })
-  .then(function() {
-    console.log("After");
+  describe('#exists', function() {
+    it('should only be called if a value is passed', function(done) {
+      var promise = q('test').optional();
+
+      promise.exists(function(val) {
+        expect(val).to.be.equal('test');
+        done();
+      });
+    });
+
+    it('should not be called when no value is passed', function(done) {
+      var promise = q().optional();
+
+      promise
+        .exists(function(val) {
+          done(new Error('exists called'));
+        })
+        .nothing(done);
+    });
+
+    it('should be able to return a value to the next promise', function(done) {
+      var promise = q('test').optional();
+
+      promise
+        .exists(function(val) {
+          return 'test2';
+        })
+        .then(function(val) {
+          expect(val).to.be.equal('test2');
+          done();
+        });
+    });
   });
 
-doSomething(false)
-  .optional()
-  .exists(function(data) {
-    console.log(data);
-  })
-  .nothing(function(val) {
-    throw new Error("TEST");
-  })
-  .then(function() {
-    console.log("After");
-  })
-  .fail(function(err) {
-    console.log(err);
-  });
+  describe('#nothing', function() {
+    it('should only be called if no value is passed', function(done) {
+      var promise = q().optional();
 
-doSomething(true)
-  .optional()
-  .then(function(data) {
-    console.log("Data exists: " + (data ? "true" : "false"));
+      promise.nothing(function() {
+        done();
+      });
+    });
+
+    it('should not be called when a value is passed', function(done) {
+      var promise = q('test').optional();
+
+      promise
+        .exists(function() {
+          done();
+        })
+        .nothing(function() {
+          done(new Error('nothing called'));
+        });
+    });
+
+    it('should be able to return a value to the next promise', function(done) {
+      var promise = q().optional();
+
+      promise
+        .nothing(function() {
+          return 'test2';
+        })
+        .then(function(val) {
+          expect(val).to.be.equal('test2');
+          done();
+        });
+    });
   });
+});
