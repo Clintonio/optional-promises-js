@@ -41,7 +41,28 @@ function OptionalPromise(promise) {
 
 if(!q.makePromise.prototype.optional) {
   q.makePromise.prototype.optional = function() {
-      return new OptionalPromise(this);
+    var onExists = q();
+    var onNothing = q();
+
+    var next = this.then(function(val) {
+      if((new Optional(val)).exists()) {
+        return q(val).then(onExists);
+      } else {
+        return q().then(onNothing);
+      }
+    });
+
+    next.exists = function(callback) {
+      onExists = callback;
+      return this;
+    };
+
+    next.nothing = function(callback) {
+      onNothing = callback;
+      return this;
+    };
+
+    return next;
   };
 }
 

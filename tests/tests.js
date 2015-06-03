@@ -38,6 +38,9 @@ promiseActive
   })
   .nothing(function(val) {
     console.log("Nothing exists");
+  })
+  .then(function() {
+    console.log("After");
   });
 
 doSomething(false)
@@ -47,4 +50,28 @@ doSomething(false)
   })
   .nothing(function(val) {
     console.log("Nothing exists");
+  })
+  .then(function() {
+    console.log("After");
+  });
+
+doSomething(false)
+  .optional()
+  .exists(function(data) {
+    console.log(data);
+  })
+  .nothing(function(val) {
+    throw new Error("TEST");
+  })
+  .then(function() {
+    console.log("After");
+  })
+  .fail(function(err) {
+    console.log(err);
+  });
+
+doSomething(true)
+  .optional()
+  .then(function(data) {
+    console.log("Data exists: " + (data ? "true" : "false"));
   });
