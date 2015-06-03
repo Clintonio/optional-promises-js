@@ -1,6 +1,6 @@
 {
   "name": "optional-promise",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "For when a promise has an optional return value",
   "main": "optional-promise.js",
   "scripts": {
@@ -15,7 +15,6 @@
     "optional",
     "q"
   ],
-  "readme": "README.md",
   "author": "Clinton Alexander",
   "license": "LGPLv3",
   "peerDependencies": {
