@@ -4,17 +4,18 @@
   "description": "For when a promise has an optional return value",
   "main": "optional-promise.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha tests"
   },
   "repository": {
     "type": "git",
-    "url": "test"
+    "url": "https://github.com/Clintonio/optional-promises-js"
   },
   "keywords": [
     "promise",
     "optional",
     "q"
   ],
+  "readme": "README.md"
   "author": "Clinton Alexander",
   "license": "LGPLv3",
   "dependencies": {
